@@ -1,20 +1,10 @@
-use crate::lib::MatrixError::{AdditionError, DotMultiplicationError, SubtractionError};
 use rand::{thread_rng, Rng};
-use thiserror::Error;
 
 #[derive(Clone, Debug)]
 pub struct Matrix {
     pub rows: usize,
     pub cols: usize,
     pub data: Vec<Vec<f64>>,
-}
-
-#[derive(Error, Debug)]
-pub enum MatrixError {
-    MultiplicationError(String),
-    AdditionError(String),
-    DotMultiplicationError(String),
-    SubtractionError(String),
 }
 
 impl Matrix {
@@ -48,11 +38,9 @@ impl Matrix {
         res
     }
 
-    pub fn multiply(&mut self, other: &Matrix) -> Result<Matrix, MatrixError> {
+    pub fn multiply(&mut self, other: &Matrix) -> Matrix {
         if self.cols != other.rows {
-            return Err(MatrixError::MultiplicationError(String::from(
-                "Attempted to multiply by matrix of incorrect dimensions",
-            )));
+            panic!("Attempted to multiply by matrix of incorrect dimensions");
         }
 
         let mut res = Matrix::zeros(self.rows, other.cols);
@@ -68,14 +56,12 @@ impl Matrix {
             }
         }
 
-        Ok(res)
+        res
     }
 
-    pub fn add(&mut self, other: &Matrix) -> Result<Matrix, MatrixError> {
+    pub fn add(&mut self, other: &Matrix) -> Matrix {
         if self.rows != other.rows || self.cols != other.cols {
-            return Err(AdditionError(String::from(
-                "Attempting to add matrix of incorrect dimensions",
-            )));
+            panic!("Attempting to add matrix of incorrect dimensions");
         }
 
         let mut res = Matrix::zeros(self.rows, self.cols);
@@ -86,14 +72,12 @@ impl Matrix {
             }
         }
 
-        Ok(res)
+        res
     }
 
-    pub fn dot_multiply(&mut self, other: &Matrix) -> Result<Matrix, MatrixError> {
+    pub fn dot_multiply(&mut self, other: &Matrix) -> Matrix {
         if self.rows != other.rows || self.cols != other.cols {
-            return Err(DotMultiplicationError(String::from(
-                "Attempting to dot multiply matrix of incorrect dimensions",
-            )));
+            panic!("Attempting to dot multiply matrix of incorrect dimensions");
         }
 
         let mut res = Matrix::zeros(self.rows, self.cols);
@@ -104,14 +88,12 @@ impl Matrix {
             }
         }
 
-        Ok(res)
+        res
     }
 
-    pub fn subtract(&mut self, other: &Matrix) -> Result<Matrix, MatrixError> {
+    pub fn subtract(&mut self, other: &Matrix) -> Matrix {
         if self.rows != other.rows || self.cols != other.cols {
-            return Err(SubtractionError(String::from(
-                "Attempting to subtract matrix of incorrect dimensions",
-            )));
+            panic!("Attempting to subtract matrix of incorrect dimensions");
         }
 
         let mut res = Matrix::zeros(self.rows, self.cols);
@@ -122,7 +104,7 @@ impl Matrix {
             }
         }
 
-        Ok(res)
+        res
     }
 
     pub fn from(data: Vec<Vec<f64>>) -> Matrix {
@@ -157,7 +139,7 @@ impl Matrix {
     }
 
     pub fn diagonal(rows: usize, cols: usize) -> Matrix {
-        let mut res = Matrix::zeros();
+        let mut res = Matrix::zeros(rows, cols);
 
         for i in 0..res.rows {
             for j in 0..res.cols {

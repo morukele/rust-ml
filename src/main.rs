@@ -1,4 +1,4 @@
-mod lib;
+mod library;
 
 pub use lib::matrix;
 
